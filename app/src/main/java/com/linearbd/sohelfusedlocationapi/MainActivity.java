@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements MyLocationService
         setContentView(R.layout.activity_main);
         requiredPermission();
 
+
     }
 
     @Override

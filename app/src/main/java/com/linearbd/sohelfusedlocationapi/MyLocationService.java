@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,11 +27,18 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
 /**
  * Created by Genius 03 on 7/27/2017.
  */
 
-public class MyLocationService implements GoogleApiClient.OnConnectionFailedListener,LocationListener,GoogleApiClient.ConnectionCallbacks {
+public class MyLocationService implements GoogleApiClient.OnConnectionFailedListener,LocationListener,GoogleApiClient.ConnectionCallbacks
+    {
+    private static final int REQUIRED_PERMISSION = 2000;
     private static final long REQUEST_INTERVAL = 30000;//60000
     private static final long REQUEST_FASTEST_INTERVAL = 3000;//5000
     private Activity activity;
@@ -44,11 +52,13 @@ public class MyLocationService implements GoogleApiClient.OnConnectionFailedList
         this.activity = activity;
         this.getPlayServicesResolutionRequest = getPlayServicesResolutionRequest;
         this.gpsOn=gpsOn;
+
         createLocationRequest();
 
         if (checkPlayServices()) {
             buildGoogleApiClient();
         }
+
     }
 
     public void pause(){
@@ -106,6 +116,7 @@ public class MyLocationService implements GoogleApiClient.OnConnectionFailedList
         }
 
     }
+
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -165,6 +176,7 @@ public class MyLocationService implements GoogleApiClient.OnConnectionFailedList
                         // initialize location requests here.
 
                         // Request for Location Update
+                        Log.d("YYY","Starting Point");
                         requestLocationUpdate();
                         break;
 
@@ -201,9 +213,10 @@ public class MyLocationService implements GoogleApiClient.OnConnectionFailedList
     }
 
     public void requestLocationUpdate(){
-        //noinspection MissingPermission
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+            //noinspection MissingPermission
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+
     }
 
     public void doIfPlayServiceExist(){
@@ -218,6 +231,8 @@ public class MyLocationService implements GoogleApiClient.OnConnectionFailedList
                 Toast.LENGTH_SHORT).show();
         activity.finish();
     }
+
+
 
     public interface MyLocationListener{
         public void getLocation(Location location);
